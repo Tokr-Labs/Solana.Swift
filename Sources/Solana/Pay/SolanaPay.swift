@@ -81,7 +81,7 @@ public class SolanaPay {
             doubleAmount = parsedAmount
         }
         
-        let label: String? = getParamURL(components: components, name: "label")
+        let label: String? = getParamURL(components: components, name: "label")?.replacingOccurrences(of: "+", with: " ")
         let message: String? = getParamURL(components: components, name: "message")
         let memo: String? = getParamURL(components: components, name: "memo")
         let reference: String? = getParamURL(components: components, name: "reference")
