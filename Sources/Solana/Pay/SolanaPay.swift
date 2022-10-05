@@ -16,7 +16,7 @@ public enum SolanaPayError: Error {
     case other(Error)
 }
 public class SolanaPay {
-    func getSolanaPayURL(
+    public func getSolanaPayURL(
         recipient: String,
         uiAmountString: String,
         label: String? = nil,
@@ -53,7 +53,7 @@ public class SolanaPay {
         }
     }
     
-    func parseSolanaPay(urlString: String) -> Result<SolanaPaySpecification, SolanaPayError> {
+    public func parseSolanaPay(urlString: String) -> Result<SolanaPaySpecification, SolanaPayError> {
         let newURL = urlString
             .replacingOccurrences(of: "\(PROTOCOL):", with: "\(PROTOCOL)://")
             .replacingOccurrences(of: "?", with: "/?")
