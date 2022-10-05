@@ -12,6 +12,7 @@ public class Solana {
     public let api: Api
     public let action: Action
     public let tokens: TokenInfoProvider
+    public let pay: SolanaPay
 
     public init(
         router: SolanaRouter,
@@ -22,6 +23,7 @@ public class Solana {
         self.tokens = tokenProvider
         self.api = Api(router: router, supportedTokens: self.tokens.supportedTokens)
         self.action = Action(api: self.api, router: router, supportedTokens: self.tokens.supportedTokens)
+        self.pay = SolanaPay()
     }
 }
 
