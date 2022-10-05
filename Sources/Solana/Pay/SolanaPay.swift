@@ -102,11 +102,11 @@ public class SolanaPay {
 }
 
 public struct SolanaPaySpecification {
-    let address: PublicKey
-    let label: String?
-    let splToken: PublicKey?
-    let message: String?
-    let memo: String?
-    let reference: String?
-    let amount: Double?
+    public let address: PublicKey
+    public let label: String?
+    public let splToken: PublicKey?
+    public let message: String?
+    public let memo: String?
+    public let reference: String?
+    public let amount: Double?
 }
