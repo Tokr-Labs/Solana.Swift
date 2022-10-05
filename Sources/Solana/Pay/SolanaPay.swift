@@ -8,7 +8,7 @@
 import Foundation
 let PROTOCOL = "solana"
 public enum SolanaPayError: Error {
-    case pathNotProvided
+    case recipientNotProvided
     case invalidAmmount
     case unsupportedProtocol
     case canNotParse
@@ -66,25 +66,9 @@ public class SolanaPay {
         guard let components = URLComponents(string: sanatizedString ?? "") else {
             return .failure(SolanaPayError.canNotParse)
         }
-//
-//        let newURL = urlString
-//            .replacingOccurrences(of: "\(PROTOCOL):", with: "\(PROTOCOL)://")
-//            .replacingOccurrences(of: "?", with: "/?")
-//            .replacingOccurrences(of: "%3F", with: "/?")
-//            .addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)
-//
-//        let components = URLComponents(
-//            url: URL(string: newURL!)!,
-//            resolvingAgainstBaseURL: false
-//        )!
-//
-//        guard components.scheme == PROTOCOL else {
-//            return .failure(SolanaPayError.unsupportedProtocol)
-//        }
-//
-//
-        guard let host = components.host, let address = PublicKey(string: host)  else {
-            return .failure(SolanaPayError.pathNotProvided)
+
+        guard let address = getParamURL(components: components, name: "recipient"), let recipient = PublicKey(string: address)  else {
+            return .failure(SolanaPayError.recipientNotProvided)
         }
 
         var doubleAmount: Double? = nil
@@ -105,7 +89,7 @@ public class SolanaPay {
             splTokenPubKey = PublicKey(string: splToken) ?? nil
         }
         
-        let spec = SolanaPaySpecification(address: address, label: label, splToken: splTokenPubKey, message: message, memo: memo, reference: reference, amount: doubleAmount)
+        let spec = SolanaPaySpecification(recipient: recipient, label: label, splToken: splTokenPubKey, message: message, memo: memo, reference: reference, amount: doubleAmount)
         return .success(spec)
     }
     
@@ -115,7 +99,7 @@ public class SolanaPay {
 }
 
 public struct SolanaPaySpecification {
-    public let address: PublicKey
+    public let recipient: PublicKey
     public let label: String?
     public let splToken: PublicKey?
     public let message: String?
