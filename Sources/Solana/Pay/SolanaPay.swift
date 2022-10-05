@@ -54,22 +54,35 @@ public class SolanaPay {
     }
     
     public func parseSolanaPay(urlString: String) -> Result<SolanaPaySpecification, SolanaPayError> {
-        let newURL = urlString
-            .replacingOccurrences(of: "\(PROTOCOL):", with: "\(PROTOCOL)://")
-            .replacingOccurrences(of: "?", with: "/?")
-            .replacingOccurrences(of: "%3F", with: "/?")
-            .addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)
         
-        let components = URLComponents(
-            url: URL(string: newURL!)!,
-            resolvingAgainstBaseURL: false
-        )!
         
-        guard components.scheme == PROTOCOL else {
+        let decodedString = urlString.removingPercentEncoding
+        
+        guard decodedString?.hasPrefix("solana:") == true else {
             return .failure(SolanaPayError.unsupportedProtocol)
         }
-
         
+        let sanatizedString = decodedString?.replacingOccurrences(of: "solana:", with: "")
+        guard let components = URLComponents(string: sanatizedString ?? "") else {
+            return .failure(SolanaPayError.canNotParse)
+        }
+//
+//        let newURL = urlString
+//            .replacingOccurrences(of: "\(PROTOCOL):", with: "\(PROTOCOL)://")
+//            .replacingOccurrences(of: "?", with: "/?")
+//            .replacingOccurrences(of: "%3F", with: "/?")
+//            .addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed)
+//
+//        let components = URLComponents(
+//            url: URL(string: newURL!)!,
+//            resolvingAgainstBaseURL: false
+//        )!
+//
+//        guard components.scheme == PROTOCOL else {
+//            return .failure(SolanaPayError.unsupportedProtocol)
+//        }
+//
+//
         guard let host = components.host, let address = PublicKey(string: host)  else {
             return .failure(SolanaPayError.pathNotProvided)
         }
